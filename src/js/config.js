@@ -1,4 +1,3 @@
-import 'reveal.js/lib/js/head.min';
 import Reveal from 'reveal.js';
 
 const PATH = './plugin';
