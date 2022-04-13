@@ -228,6 +228,92 @@
 </section>
 
 <section>
+    <h2><code>startActivityForResult(intent, codigo)</code></h2>
+    <ol>
+        <li>Faz a chamada ao método <code>startActivityForResult</code> indicando um código de retorno.</li>
+        <li>Empacota o resultado desejado em uma <code>Intent</code> e a envia para o método <code>setResult()</code></li>
+        <li>Implementa o método <code>onActivityResult</code> com o código utilizado anteriormente para tratar o resultado proveniente da <code>SegundaActivity</code></li>
+    </ol>
+</section>
+
+<section>
+    <h2><code>startActivityForResult(intent, codigo)</code></h2>
+    <p>
+        1. Faz a chamada ao método <code>startActivityForResult</code> indicando um código de retorno.
+    </p>
+    <pre data-file="MainActivity.java"><code data-trim data-noescape style="max-height: none;" class="java">
+        public static final int RESULT_CODE = 1;
+        ...
+        @Override 
+        public void onCreate(...) {      
+            btnUpdate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, SegundaActivity.class);
+                    <mark>startActivityForResult(intent, RESULT_CODE);</mark>
+                }
+            });
+        }
+        ...
+    </code></pre>
+</section>
+
+<section>
+    <h2><code>startActivityForResult(intent, codigo)</code></h2>
+    <p>
+        2. Empacota o resultado desejado em uma <code>Intent</code> e a envia para o método <code>setResult()</code>.
+    </p>
+    <pre data-file="SegundaActivity.java"><code data-trim data-noescape style="max-height: none;" class="java">
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            ...
+            btnSair.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // processa o resultado que será retornado
+                    int result = ...; 
+
+                    // empacota o resultado no bundle da intent de retorno
+                    Bundle resultBundle = new Bundle();
+                    Intent resultIntent = new Intent();
+                    resultBundle.putLong("resultado", result);
+                    resultIntent.putExtras(resultBundle);
+
+                    // define a intent que será retornada e finaliza a activity
+                    <mark>this.setResult(MainActivity.RESULT_CODE, resultIntent);</mark>
+                    this.finish();
+                }
+            });
+        }
+    </code></pre>
+</section>
+
+<section>
+    <h2><code>startActivityForResult(intent, codigo)</code></h2>
+    <p>
+        3. Implementa o método <code>onActivityResult</code> com o código utilizado anteriormente para tratar o resultado proveniente da <code>SegundaActivity</code>.
+    </p>
+    <pre data-file="MainActivity.java"><code data-trim data-noescape style="max-height: none;" class="java">
+        public static final int RESULT_CODE = 1;
+        ...
+        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            >Bundle resultData = data.getExtras();
+
+            switch (requestCode) {
+                <mark>case RESULT_CODE:</mark>
+                    // ... Trata o resultado desejado ...
+                    int data = resultData.getInt("resultado");
+                    break;
+                default:
+                    Log.w("MainActivity", "Resultado retornado incorreto!");
+                    break;
+            }
+        }
+    </code></pre>
+</section>
+
+<section>
     <h2>Passagem de Parâmetros</h2>
     <p>Frequentemente precisamos enviar dados de uma tela para outra.</p>
     <p>Porém, devido ao mecanismo de Intents, não é possível acessar diretamente propriedades de outras Activities</p>
